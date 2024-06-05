@@ -78,6 +78,82 @@
     TOPIC ||--|{ REPLY: "replies"
 ```
 
+### Class Diagram
+
+
+```mermaid
+    sequenceDiagram
+    actor User
+    participant AuthService
+    participant UserService
+    participant PostService
+    participant CommentService
+    participant SearchService
+    participant CourseService
+
+    User ->> AuthService: register(name, email, password)
+    AuthService ->> UserService: createUser(name, email, password)
+    UserService ->> AuthService: userCreated
+    AuthService ->> User: registrationSuccess
+
+    User ->> AuthService: login(email, password)
+    AuthService ->> UserService: authenticate(email, password)
+    UserService ->> AuthService: authenticationSuccess
+    AuthService ->> User: loginSuccess
+
+    User ->> PostService: createPost(title, message, courseId)
+    PostService ->> CourseService: validateCourse(courseId)
+    CourseService ->> PostService: courseValid
+    PostService ->> UserService: getUser(userId)
+    UserService ->> PostService: user
+    PostService ->> User: postCreated
+
+    User ->> PostService: readPost(postId)
+    PostService ->> User: postDetails
+
+    User ->> PostService: updatePost(postId, newTitle, newMessage)
+    PostService ->> UserService: validateUser(userId)
+    UserService ->> PostService: userValid
+    PostService ->> User: postUpdated
+
+    User ->> PostService: deletePost(postId)
+    PostService ->> UserService: validateUser(userId)
+    UserService ->> PostService: userValid
+    PostService ->> User: postDeleted
+
+    User ->> CommentService: createComment(postId, message)
+    CommentService ->> PostService: validatePost(postId)
+    PostService ->> CommentService: postValid
+    CommentService ->> UserService: getUser(userId)
+    UserService ->> CommentService: user
+    CommentService ->> User: commentCreated
+
+    User ->> CommentService: readComment(commentId)
+    CommentService ->> User: commentDetails
+
+    User ->> CommentService: updateComment(commentId, newMessage)
+    CommentService ->> UserService: validateUser(userId)
+    UserService ->> CommentService: userValid
+    CommentService ->> User: commentUpdated
+
+    User ->> CommentService: deleteComment(commentId)
+    CommentService ->> UserService: validateUser(userId)
+    UserService ->> CommentService: userValid
+    CommentService ->> User: commentDeleted
+
+    User ->> SearchService: searchPost(keyword)
+    SearchService ->> PostService: searchByKeyword(keyword)
+    PostService ->> SearchService: searchResults
+    SearchService ->> User: displaySearchResults
+
+    User ->> SearchService: searchByCategory(categoryId)
+    SearchService ->> CourseService: getCoursePosts(categoryId)
+    CourseService ->> SearchService: coursePosts
+    SearchService ->> User: displaySearchResults
+
+
+```
+
 
 
 
