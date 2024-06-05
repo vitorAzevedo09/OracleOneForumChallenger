@@ -32,7 +32,8 @@
 
 ### Entity Relationship Diagram 
 
-  ``erDiagram
+  ```mermaid
+  erDiagram
     USER {
         int id
         string name
@@ -75,7 +76,7 @@
     REPLY }o--|| TOPIC: "topic"
     
     TOPIC ||--|{ REPLY: "replies"
-  ``
+´´´
 
 
 
