@@ -3,9 +3,9 @@ services:
     image: 'mysql:latest'
     hostname: 'mysql'
     environment:
-      - 'MYSQL_DATABASE=${MYSQL_DB_DATABASE}'
-      - 'MYSQL_PASSWORD=${MYSQL_DB_PASSWORD}'
-      - 'MYSQL_ROOT_PASSWORD=${MYSQL_DB_ROOT_PASSWORD}'
-      - 'MYSQL_USER=${MYSQL_DB_USERNAME}'
+      - 'MYSQL_DATABASE=${MYSQL_DB_DATABASE:-forum_hub}'
+      - 'MYSQL_PASSWORD=${MYSQL_DB_PASSWORD:-secret}'
+      - 'MYSQL_ROOT_PASSWORD=${MYSQL_DB_ROOT_PASSWORD:-verysecret}'
+      - 'MYSQL_USER=${MYSQL_DB_USERNAME:-forum_hub_user}'
     ports:
       - '${MYSQL_DB_PORT}:3306'

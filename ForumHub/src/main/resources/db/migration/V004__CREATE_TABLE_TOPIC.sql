@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS TOPICS (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
+    title VARCHAR(55) NOT NULL,
     message TEXT NOT NULL,
     creation_date DATETIME NOT NULL,
-    status VARCHAR(255) NOT NULL,
+    status ENUM('OPEN', 'CLOSED', 'PENDING')  NOT NULL,
     user_id INT NOT NULL,
     course_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES USERS(id),
