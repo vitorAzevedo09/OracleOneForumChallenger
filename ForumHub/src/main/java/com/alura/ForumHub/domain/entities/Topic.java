@@ -41,7 +41,7 @@ public class Topic {
   private final ZonedDateTime creationDate = ZonedDateTime.now();
 
   @Column(name = "status", nullable = false)
-  private TopicStatus status;
+  private final TopicStatus status = TopicStatus.OPEN;
 
   @ManyToOne
   @JoinColumn(name = "course_id", nullable = false)
@@ -49,6 +49,6 @@ public class Topic {
 
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+  private User author;
 
 }
