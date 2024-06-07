@@ -37,7 +37,7 @@ public class TopicController {
 
   @PostMapping
   public ResponseEntity<TopicWithId> create(
-      @Valid @RequestBody TopicWithoutId topic) {
+      @Valid @RequestBody TopicWithoutId topic) throws Exception {
     Topic newTopic = topicService.save(topic.toEntity());
     TopicWithId topicWithId = new TopicWithId(newTopic);
     return ResponseEntity.status(201).body(topicWithId);
