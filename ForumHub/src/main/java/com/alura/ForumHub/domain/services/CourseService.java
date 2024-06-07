@@ -20,11 +20,11 @@ public class CourseService {
     this.courseRepository = courseRepository;
   }
 
-  public void existCourseOrFail(Course course) {
-    if (!courseRepository.existsById(course.getId())) {
-      throw new EntityNotFoundException(
-          String.format("Course with id %d not found", course.getId()));
-    }
+  public Course findOrFail(Course course) {
+    return courseRepository
+        .findById(course.getId())
+        .orElseThrow(() -> new EntityNotFoundException(
+            String.format("Course with id %d not found", course.getId())));
   }
 
   @Transactional

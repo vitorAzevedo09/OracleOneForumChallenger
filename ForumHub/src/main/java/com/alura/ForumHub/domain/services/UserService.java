@@ -6,6 +6,7 @@ import com.alura.ForumHub.domain.entities.User;
 import com.alura.ForumHub.domain.repositories.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 /**
  * UserService
@@ -19,11 +20,16 @@ public class UserService {
     this.repository = repository;
   }
 
-  public void existUserOrFail(User user) {
-    if (!repository.existsById(user.getId())) {
-      throw new EntityNotFoundException(
-          String.format("Author with id %d not found", user.getId()));
-    }
+  public User findOrFail(User user) {
+    return repository
+        .findById(user.getId())
+        .orElseThrow(() -> new EntityNotFoundException(
+            String.format("Author with id %d not found", user.getId())));
+  }
+
+  @Transactional
+  public User save(User user) {
+    return repository.save(user);
   }
 
 }
