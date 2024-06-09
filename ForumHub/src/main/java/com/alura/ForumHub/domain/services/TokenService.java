@@ -13,10 +13,12 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 
 @Service
-public class AuthService {
+public class TokenService {
 
   @Value("${api.security.token.secret}")
   private String secret;
+
+  public String TOKEN_TYPE = "Bearer";
 
   public String generateToken(User user) {
     try {
