@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.alura.ForumHub.domain.entities.Topic;
@@ -42,8 +43,8 @@ public class TopicService {
     return topicRepository.save(topic);
   }
 
-  public Page<Topic> list(Pageable pageable) {
-    return topicRepository.findAll(pageable);
+  public Page<Topic> list(Specification<Topic> specification, Pageable pageable) {
+    return topicRepository.findAll(specification, pageable);
   }
 
 }

@@ -42,17 +42,17 @@ public class Topic {
   @Column(name = "message", nullable = false)
   private String message;
 
-  @Column(name = "creation_date", nullable = false)
-  private final ZonedDateTime creationDate = ZonedDateTime.now();
+  @Column(name = "created_at", nullable = false)
+  private final ZonedDateTime createdAt = ZonedDateTime.now();
 
   @Column(name = "status", nullable = false)
   private final TopicStatus status = TopicStatus.OPEN;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "course_id", nullable = false)
   private Course course;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
   private User author;
 

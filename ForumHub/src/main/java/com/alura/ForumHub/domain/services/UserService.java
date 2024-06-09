@@ -29,6 +29,9 @@ public class UserService {
 
   @Transactional
   public User save(User user) {
+    if (repository.existsByEmail(user.getEmail())) {
+      throw new IllegalArgumentException("Email already in use");
+    }
     return repository.save(user);
   }
 

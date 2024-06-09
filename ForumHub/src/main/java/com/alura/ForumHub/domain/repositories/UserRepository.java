@@ -1,14 +1,10 @@
 package com.alura.ForumHub.domain.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import com.alura.ForumHub.domain.entities.User;
+import com.alura.ForumHub.infrastructure.repositories.UserRepositoryJPA;
 
 /**
  * UserRepository
  */
-@Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends UserRepositoryJPA {
 
 }
