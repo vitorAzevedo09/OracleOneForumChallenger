@@ -12,17 +12,18 @@ import com.alura.ForumHub.domain.entities.Topic;
  */
 public class TopicSpecs {
 
-  public static Specification<Topic> courseTitleLike(String title) {
+  public static Specification<Topic> courseNameLike(String name) {
     return (root, query, criteriaBuilder) -> criteriaBuilder
-        .like(root.get("course").get("name"), "%" + title + "%");
+        .like(root.get("course").get("name"), "%" + name + "%");
   }
 
   public static Specification<Topic> creationYearIs(Integer year) {
+    int yearFinal = year == 0 ? 9999 : year + 1;
     return (root, query, criteriaBuilder) -> criteriaBuilder
         .between(
             root.get("createdAt").as(ZonedDateTime.class),
             intToZonedDateTime(year),
-            intToZonedDateTime(year + 1));
+            intToZonedDateTime(yearFinal));
   }
 
   private static ZonedDateTime intToZonedDateTime(int year) {

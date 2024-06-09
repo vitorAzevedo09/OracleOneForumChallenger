@@ -37,11 +37,11 @@ public class TopicController {
   @GetMapping
   public ResponseEntity<Page<TopicWithId>> list(
       @PageableDefault(sort = { "createdAt", "title" }, size = 10, direction = Direction.ASC) Pageable pageable,
-      @RequestParam(name = "courseTitle", required = false, defaultValue = "") String title,
+      @RequestParam(name = "courseName", required = false, defaultValue = "") String name,
       @RequestParam(name = "creationYear", required = false, defaultValue = "0") Integer year) {
 
     Page<Topic> topics = topicService.list(
-        courseTitleLike(title)
+        courseNameLike(name)
             .and(creationYearIs(year)),
         pageable);
 
