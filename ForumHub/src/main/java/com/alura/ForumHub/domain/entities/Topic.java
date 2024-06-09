@@ -48,11 +48,11 @@ public class Topic {
   @Column(name = "status", nullable = false)
   private final TopicStatus status = TopicStatus.OPEN;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "course_id", nullable = false)
   private Course course;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "user_id", nullable = false)
   private User author;
 

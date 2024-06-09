@@ -58,10 +58,14 @@ public class AuthController {
     var authenticate = new UsernamePasswordAuthenticationToken(
         data.email(),
         data.password());
-    var authenticated = authenticationManager.authenticate(authenticate);
-    User userAuthenticaded = (User) authenticated.getPrincipal();
-    var token = tokenService.generateToken(userAuthenticaded);
-    return ResponseEntity.ok(new UserWithToken(token, tokenService.TOKEN_TYPE, userAuthenticaded));
+    try {
+      var authenticated = authenticationManager.authenticate(authenticate);
+      User userAuthenticaded = (User) authenticated.getPrincipal();
+      var token = tokenService.generateToken(userAuthenticaded);
+      return ResponseEntity.ok(new UserWithToken(token, tokenService.TOKEN_TYPE, userAuthenticaded));
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().build();
+    }
   }
 
   @RequestMapping("/logout")
