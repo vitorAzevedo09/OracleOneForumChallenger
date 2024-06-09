@@ -11,6 +11,7 @@ import com.alura.ForumHub.domain.entities.Topic;
 import com.alura.ForumHub.domain.repositories.TopicRepository;
 import com.alura.ForumHub.infrastructure.validations.topic.TopicValidation;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 /**
@@ -35,18 +36,27 @@ public class TopicService {
     this.courseService = courseService;
   }
 
-  public boolean isDuplicated(Topic topic) {
-    return topicRepository
-        .existsByTitleAndMessage(
-            topic.getTitle(),
-            topic.getMessage());
+  private EntityNotFoundException throwNotFoundException(Long id) {
+    return new EntityNotFoundException(
+        String.format("Topic with id %d not found", id));
   }
 
   public Topic findOrFail(Long id) {
     return topicRepository
         .findById(id)
-        .orElseThrow(() -> new IllegalArgumentException(
-            String.format("Topic with id %d not found", id)));
+        .orElseThrow(() -> throwNotFoundException(id));
+  }
+
+  @Transactional
+  public Topic save(Topic topic) {
+    topicValidations.forEach(validation -> validation.validate(topic));
+    topic.setAuthor(userService.findOrFail(topic.getAuthor()));
+    topic.setCourse(courseService.findOrFail(topic.getCourse()));
+    return topicRepository.save(topic);
+  }
+
+  public Page<Topic> list(Specification<Topic> specification, Pageable pageable) {
+    return topicRepository.findAll(specification, pageable);
   }
 
   @Transactional
@@ -61,15 +71,12 @@ public class TopicService {
   }
 
   @Transactional
-  public Topic save(Topic topic) {
-    topicValidations.forEach(validation -> validation.validate(topic));
-    topic.setAuthor(userService.findOrFail(topic.getAuthor()));
-    topic.setCourse(courseService.findOrFail(topic.getCourse()));
-    return topicRepository.save(topic);
-  }
-
-  public Page<Topic> list(Specification<Topic> specification, Pageable pageable) {
-    return topicRepository.findAll(specification, pageable);
+  public void delete(final Long id) {
+    Boolean existInDB = topicRepository.existsById(id);
+    if (!existInDB) {
+      throw throwNotFoundException(id);
+    }
+    topicRepository.deleteById(id);
   }
 
 }

@@ -3,7 +3,7 @@ package com.alura.ForumHub.infrastructure.validations.topic;
 import org.springframework.stereotype.Component;
 
 import com.alura.ForumHub.domain.entities.Topic;
-import com.alura.ForumHub.domain.services.TopicService;
+import com.alura.ForumHub.domain.repositories.TopicRepository;
 import com.alura.ForumHub.infrastructure.exception.ValidationException;
 
 /**
@@ -12,17 +12,24 @@ import com.alura.ForumHub.infrastructure.exception.ValidationException;
 @Component
 public class TopicValidationDuplicate implements TopicValidation {
 
-  private final TopicService service;
+  private final TopicRepository tRepository;
 
-  public TopicValidationDuplicate(TopicService service) {
-    this.service = service;
+  public TopicValidationDuplicate(TopicRepository topicRepository) {
+    this.tRepository = topicRepository;
   }
 
   @Override
   public void validate(Topic topic) {
-    if (service.isDuplicated(topic)) {
+    if (isDuplicated(topic)) {
       throw new ValidationException("Topic must not be duplicated");
     }
+  }
+
+  public boolean isDuplicated(Topic topic) {
+    return tRepository
+        .existsByTitleAndMessage(
+            topic.getTitle(),
+            topic.getMessage());
   }
 
 }
