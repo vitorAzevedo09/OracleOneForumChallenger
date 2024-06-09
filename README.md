@@ -135,13 +135,14 @@ TopicService ->> User: topicDeleted
 Before proceeding with the installation, ensure you have created a `.env` file in the `ForumHub` directory with the following environment variables:
 
 ```plaintext
-MYSQL_DB_DATABASE=forum_hub
-MYSQL_DB_PASSWORD=secret
-MYSQL_DB_ROOT_PASSWORD=verysecret
-MYSQL_DB_USERNAME=forum_hub_user
-MYSQL_DB_PORT=3306
-MYSQL_DB_HOST=127.0.0.1
-JWT_SECRET=my-secret-key
+    MYSQL_DB_DATABASE=forum_hub
+    MYSQL_DB_PASSWORD=secret
+    MYSQL_DB_ROOT_PASSWORD=verysecret
+    MYSQL_DB_USERNAME=forum_hub_user
+    MYSQL_DB_PORT=3306
+    MYSQL_DB_HOST=127.0.0.1
+    JWT_SECRET=my-secret-key
+```
 
 2. Update the `application.properties` file with your database credentials:
    ```properties
