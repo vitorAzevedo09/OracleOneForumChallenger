@@ -34,9 +34,53 @@ public class TokenService {
 
   }
 
-  public String validateToken(String token) {
+  public String generateRefreshToken(User user) {
+    try {
+      Algorithm algorithm = Algorithm.HMAC256(secret);
+      return JWT.create()
+          .withIssuer("forumhub")
+          .withSubject(user.getEmail())
+          .withExpiresAt(generateExpirationDate())
+          .sign(algorithm);
+    } catch (Exception e) {
+      throw new RuntimeException("Error while generating JWT token", e);
+    }
+  }
+
+  public Boolean validateToken(String token) {
     try {
       System.out.println(secret);
+      Algorithm algorithm = Algorithm.HMAC256(secret);
+      JWT
+          .require(algorithm)
+          .withIssuer("forumhub")
+          .build()
+          .verify(token)
+          .getSubject();
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
+
+  }
+
+  public Boolean validateRefreshToken(String refreshToken) {
+    try {
+      Algorithm algorithm = Algorithm.HMAC256(secret);
+      JWT
+          .require(algorithm)
+          .withIssuer("forumhub")
+          .build()
+          .verify(refreshToken)
+          .getSubject();
+      return true;
+    } catch (JWTCreationException e) {
+      return false;
+    }
+  }
+
+  public String extractEmail(String token) {
+    try {
       Algorithm algorithm = Algorithm.HMAC256(secret);
       return JWT
           .require(algorithm)
@@ -45,9 +89,8 @@ public class TokenService {
           .verify(token)
           .getSubject();
     } catch (JWTCreationException e) {
-      return "";
+      return null;
     }
-
   }
 
   private Instant generateExpirationDate() {

@@ -3,15 +3,20 @@ package com.alura.ForumHub.application.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alura.ForumHub.application.dtos.LoginData;
 import com.alura.ForumHub.application.dtos.RegisterData;
+import com.alura.ForumHub.application.dtos.TokenRefresh;
+import com.alura.ForumHub.application.dtos.TokenResponse;
 import com.alura.ForumHub.application.dtos.UserOnlyIdAndName;
-import com.alura.ForumHub.application.dtos.UserWithToken;
 import com.alura.ForumHub.domain.entities.User;
 import com.alura.ForumHub.domain.services.TokenService;
 import com.alura.ForumHub.domain.services.UserService;
@@ -35,12 +40,14 @@ public class AuthController {
     this.authenticationManager = authenticationManager;
   }
 
-  @RequestMapping("/me")
-  public ResponseEntity<?> me() {
-    return ResponseEntity.ok().build();
+  @GetMapping("/me")
+  public ResponseEntity<UserOnlyIdAndName> me() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    User user = (User) authentication.getPrincipal();
+    return ResponseEntity.ok(new UserOnlyIdAndName(user));
   }
 
-  @RequestMapping("/register")
+  @PostMapping("/register")
   public ResponseEntity<UserOnlyIdAndName> register(@Valid @RequestBody RegisterData data) {
     String encryptedPassword = new BCryptPasswordEncoder().encode(data.password()); // data.password();
     User user = User
@@ -53,29 +60,33 @@ public class AuthController {
     return ResponseEntity.ok(new UserOnlyIdAndName(newUser));
   }
 
-  @RequestMapping("/login")
-  public ResponseEntity<UserWithToken> login(@Valid @RequestBody LoginData data) {
+  @PostMapping("/login")
+  public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginData data) {
     var authenticate = new UsernamePasswordAuthenticationToken(
         data.email(),
         data.password());
-    try {
-      var authenticated = authenticationManager.authenticate(authenticate);
-      User userAuthenticaded = (User) authenticated.getPrincipal();
-      var token = tokenService.generateToken(userAuthenticaded);
-      return ResponseEntity.ok(new UserWithToken(token, tokenService.TOKEN_TYPE, userAuthenticaded));
-    } catch (Exception e) {
+    var authenticated = authenticationManager.authenticate(authenticate);
+    User userAuthenticaded = (User) authenticated.getPrincipal();
+    String token = tokenService.generateToken(userAuthenticaded);
+    String refreshToken = tokenService.generateRefreshToken(userAuthenticaded);
+    return ResponseEntity.ok(new TokenResponse(token, refreshToken, tokenService.TOKEN_TYPE));
+  }
+
+  @PostMapping("/logout")
+  public ResponseEntity<Void> logout() {
+    SecurityContextHolder.clearContext();
+    return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("/refresh")
+  public ResponseEntity<TokenResponse> refresh(@Valid @RequestBody TokenRefresh refreshToken) {
+    if (!tokenService.validateRefreshToken(refreshToken.refreshToken())) {
       return ResponseEntity.badRequest().build();
     }
-  }
-
-  @RequestMapping("/logout")
-  public ResponseEntity<Void> logout() {
-    return ResponseEntity.ok().build();
-  }
-
-  @RequestMapping("/refresh")
-  public ResponseEntity<Void> refresh() {
-    return ResponseEntity.ok().build();
+    String username = tokenService.extractEmail(refreshToken.refreshToken());
+    User user = (User) userService.loadUserByUsername(username);
+    var newAccessToken = tokenService.generateToken(user);
+    return ResponseEntity.ok(new TokenResponse(newAccessToken, refreshToken.refreshToken(), tokenService.TOKEN_TYPE));
   }
 
 }

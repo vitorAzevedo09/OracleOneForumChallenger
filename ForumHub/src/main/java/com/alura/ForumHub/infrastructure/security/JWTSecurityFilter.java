@@ -2,10 +2,13 @@ package com.alura.ForumHub.infrastructure.security;
 
 import java.io.IOException;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.alura.ForumHub.domain.services.TokenService;
 import com.alura.ForumHub.domain.services.UserService;
@@ -33,12 +36,17 @@ public class JWTSecurityFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
     var token = recoverToken(request);
-    if (token != null) {
-      var username = tokenService.validateToken(token);
-      var user = userService.loadUserByUsername(username);
-      var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-      SecurityContextHolder.getContext().setAuthentication(authentication);
+    if (token == null) {
+      filterChain.doFilter(request, response);
+      return;
     }
+    if (!tokenService.validateToken(token)) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+    }
+    String username = tokenService.extractEmail(token);
+    var user = userService.loadUserByUsername(username);
+    var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(authentication);
     filterChain.doFilter(request, response);
   }
 
