@@ -51,7 +51,7 @@ public class User implements UserDetails {
   @Column(name = "password", nullable = false)
   private String password;
 
-  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<Profile> profiles;
 
   @Override
