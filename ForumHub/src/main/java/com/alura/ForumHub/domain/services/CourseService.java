@@ -20,11 +20,11 @@ public class CourseService {
     this.courseRepository = courseRepository;
   }
 
-  public Course findOrFail(Course course) {
+  public Course findOrFail(final Long id) {
     return courseRepository
-        .findById(course.getId())
+        .findById(id)
         .orElseThrow(() -> new EntityNotFoundException(
-            String.format("Course with id %d not found", course.getId())));
+            String.format("Course with id %d not found", id)));
   }
 
   @Transactional

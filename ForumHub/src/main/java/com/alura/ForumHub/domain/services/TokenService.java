@@ -49,7 +49,6 @@ public class TokenService {
 
   public Boolean validateToken(String token) {
     try {
-      System.out.println(secret);
       Algorithm algorithm = Algorithm.HMAC256(secret);
       JWT
           .require(algorithm)

@@ -50,8 +50,12 @@ public class TopicService {
   @Transactional
   public Topic save(Topic topic) {
     topicValidations.forEach(validation -> validation.validate(topic));
-    topic.setAuthor(userService.findOrFail(topic.getAuthor()));
-    topic.setCourse(courseService.findOrFail(topic.getCourse()));
+    topic.setAuthor(userService.findOrFail(topic
+        .getAuthor()
+        .getId()));
+    topic.setCourse(courseService.findOrFail(topic
+        .getCourse()
+        .getId()));
     return topicRepository.save(topic);
   }
 
@@ -64,8 +68,12 @@ public class TopicService {
     topicValidations.forEach(validation -> validation.validate(topic));
 
     topic.setId(findOrFail(id).getId());
-    topic.setAuthor(userService.findOrFail(topic.getAuthor()));
-    topic.setCourse(courseService.findOrFail(topic.getCourse()));
+    topic.setAuthor(userService.findOrFail(topic
+        .getAuthor()
+        .getId()));
+    topic.setCourse(courseService.findOrFail(topic
+        .getCourse()
+        .getId()));
 
     return topicRepository.save(topic);
   }
