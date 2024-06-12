@@ -9,13 +9,13 @@ import jakarta.validation.constraints.NotNull;
  * UserWithoutId
  */
 public record UserWithoutId(
-    @NotNull @NotBlank String name,
-    @NotNull @NotBlank String email) {
+        @NotNull @NotBlank String name,
+        @NotNull @NotBlank String email) {
 
-  public User toEntity() {
-    return User.builder()
-        .name(name)
-        .email(email)
-        .build();
-  }
+    public User toEntity() {
+        return User.builder()
+                .name(name)
+                .email(email)
+                .build();
+    }
 }

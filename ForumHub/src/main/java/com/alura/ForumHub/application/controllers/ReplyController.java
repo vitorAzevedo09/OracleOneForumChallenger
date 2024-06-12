@@ -18,6 +18,7 @@ import com.alura.ForumHub.application.dtos.ReplyWithoutId;
 import com.alura.ForumHub.domain.entities.Reply;
 import com.alura.ForumHub.domain.services.ReplyService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 /**
@@ -25,6 +26,7 @@ import jakarta.validation.Valid;
  */
 @RestController
 @RequestMapping("/replies")
+@SecurityRequirement(name = "bearerAuth")
 public class ReplyController {
 
   private final ReplyService replyService;

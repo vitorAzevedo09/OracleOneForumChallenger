@@ -17,6 +17,7 @@ import com.alura.ForumHub.application.dtos.UserWithoutId;
 import com.alura.ForumHub.domain.entities.User;
 import com.alura.ForumHub.domain.services.UserService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 /**
@@ -24,6 +25,7 @@ import jakarta.validation.Valid;
  */
 @RestController
 @RequestMapping("/users")
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
   private final UserService userService;

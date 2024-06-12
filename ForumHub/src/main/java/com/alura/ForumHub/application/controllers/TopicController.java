@@ -20,6 +20,9 @@ import com.alura.ForumHub.application.dtos.TopicWithId;
 import com.alura.ForumHub.application.dtos.TopicWithoutId;
 import com.alura.ForumHub.domain.entities.Topic;
 import com.alura.ForumHub.domain.services.TopicService;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import static com.alura.ForumHub.infrastructure.repositories.specifications.TopicSpecs.*;
 
 import jakarta.validation.Valid;
@@ -29,6 +32,7 @@ import jakarta.validation.Valid;
  */
 @RestController
 @RequestMapping("/topics")
+@SecurityRequirement(name = "bearerAuth")
 public class TopicController {
 
   private final TopicService topicService;

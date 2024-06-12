@@ -21,6 +21,8 @@ import com.alura.ForumHub.domain.entities.User;
 import com.alura.ForumHub.domain.services.TokenService;
 import com.alura.ForumHub.domain.services.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 /**
@@ -41,6 +43,7 @@ public class AuthController {
   }
 
   @GetMapping("/me")
+  @Operation(security = @SecurityRequirement(name = "bearerAuth"))
   public ResponseEntity<UserOnlyIdAndName> me() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     User user = (User) authentication.getPrincipal();
@@ -73,12 +76,14 @@ public class AuthController {
   }
 
   @PostMapping("/logout")
+  @Operation(security = @SecurityRequirement(name = "bearerAuth"))
   public ResponseEntity<Void> logout() {
     SecurityContextHolder.clearContext();
     return ResponseEntity.ok().build();
   }
 
   @PostMapping("/refresh")
+  @Operation(security = @SecurityRequirement(name = "bearerAuth"))
   public ResponseEntity<TokenResponse> refresh(@Valid @RequestBody TokenRefresh refreshToken) {
     if (!tokenService.validateRefreshToken(refreshToken.refreshToken())) {
       return ResponseEntity.badRequest().build();
